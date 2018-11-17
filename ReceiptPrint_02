@@ -103,10 +103,13 @@ while(1): # 반복문 실행
             best.append('유통기한 까지는 {}일 남았습니다.'.format(NUTELLA.days, NUTELLA.seconds // 3600))
         elif ("COKE" in div[i]):
             best.append('유통기한 까지는 {}일 남았습니다.'.format(COKE.days, COKE.seconds // 3600))
+        elif ("TOTAL" in div[i]): #총 금액을 구하는 리스트 추가 
+            totalList = div[i].split()
+            best.append('총 금액 :  {} '.format(totalList[1]))
         else:
             best.append (" ")
         i = i+1
-
+    
 
     if(txt[end:end+4] == "SOLD"):
         break
