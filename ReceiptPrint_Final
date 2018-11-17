@@ -4,6 +4,11 @@ import pytesseract # 이미지내에서 문자를 추출하기 위한 OCR기술�
 import datetime # 시간을 다루기 위한 모듈
 from openpyxl import * # 엑셀을 다루는 라이브러리
 import string # 문자열을 다루는 라이브러리
+from PIL.ExifTags import TAGS #이미지의 메타데이터를 가져오기 위한 라이브러리
+from PIL import Image
+
+
+
 img_path = 'C:/test01.jpg' # 경로 설정
 #cv2.imread(이미지파일경로, flag) 이미지 파일을 읽는다.
 #cv2.IMREAD_COLOR = 이미지 파일을 Color로 읽어들이며, 투명한 부분을 무시하고 보통 Default 값이다.
@@ -147,3 +152,132 @@ for row in range(1,i+1): #
 
 # 엑셀 파일 저장
 wb.save('영수증.xlsx')
+
+
+
+#여기부터 문자 인식하기
+
+num = []
+
+# 문자메세지가 저장되어 있는 엑셀을 읽어준다
+wba = openpyxl.load_workbook('sms.xlsx')
+
+# 현재 시트를 활성화 해준다.
+wsa = wba.active
+#첫번째 시트를 열어준다
+sheet = wba.get_sheet_by_name('Sheet1')
+#소비 정보를 저장할 시트를 하나 새로 만들어준다.
+wsa1 = wba.create_sheet(title = "소비 정보")
+
+j = 0
+k = 0
+s = 1
+info = []#전화번호를 저장할 리스트
+price = []#소비정보를 저장할 리스트
+start1 = 0#메세지의 순서를 구분해 줄 변수
+end1 = 0#메세지의 순서를 구분해 줄 변수
+
+
+# 메시지 정보
+#시트의 행수 만큼 반복해주며 정보를 가져온다
+for ra in sheet.rows:
+
+    # 행의 인덱스 정보
+    ri = ra[0].row
+    # 전화번호 정보를 저장해준다
+    info.append(ra[1].value)
+    # 소비정보를 저장해준다
+    price.append(ra[5].value)
+
+    #전화번호가 없는 메세지일 경우 비교에 오류가 생기기 때문에 다음칸으로 넘겨준다
+    if (info[ri-1] == None):
+     continue
+
+    #전화번호가 우리은행의 전화번호이면 정보를 가져온다
+    if ("15889955" in info[ri-1]):
+     #첫번째 열에 은행 정보를 저장해준다
+     wsa1.cell(row=s, column=1, value=("{}".format("우리카드")))
+     #두번째 열에 소비 정보를 저장해준다
+     wsa1.cell(row=s, column=2, value=("{}".format(price[ri-1])))
+     s = s + 1
+
+     #전화번호가 삼성카드의 전화번호이면 정보를 가져온다
+    elif ("15888900" in info[ri-1]):
+     wsa1.cell(row=s, column=1, value=("{}".format("삼성카드")))
+     wsa1.cell(row=s, column=2, value=("{}".format(price[ri - 1])))
+     s = s + 1
+
+     # 전화번호가 NH농협카드의 전화번호이면 정보를 가져온다
+    elif ("0269426478" in info[ri-1]):
+     wsa1.cell(row=s, column=1, value=("{}".format("NH농협")))
+     wsa1.cell(row=s, column=2, value=("{}".format(price[ri - 1])))
+     s = s + 1
+
+#가계부를 저장해준다.
+wba.save('가계부1.xlsx')
+
+#사진의 GPS정보를 가져오는 부분
+
+#GPS정보를 저장할 파일
+filename1 = "image (1).jpg"
+filename2 = "image (2).jpg"
+filename3 = "image (3).jpg"
+filename4 = "image (4).jpg"
+filename5 = "image (5).jpg"
+filename6 = "image (6).jpg"
+filename7 = "image (7).jpg"
+filename8 = "image (8).jpg"
+filename9 = "image (9).jpg"
+filename10 = "image (10).jpg"
+
+#파일의 확장자
+extension = filename1.split('.')[-1]
+
+#file형식이 jpg일경우 다음의 명령을 실행한다. jpg인 이유는 EXIF메타 데이터가 jpg에만 존재하기 때문이다.
+if (extension == 'jpg') | (extension == 'JPG') | (extension == 'jpeg') | (extension == 'JPEG'):
+    try:
+
+        # gps정보를 얻기 위한 이미지를 열어준다
+        location = Image.open(filename1)
+
+        # 정보를 읽어온다
+        info = location._getexif()
+        exif = {}
+        for tag, value in info.items():
+            decoded = TAGS.get(tag, tag)
+            exif[decoded] = value
+
+        # EXIF데이터로 부터 gps정보를 얻어온다
+        exifGPS = exif['GPSInfo']
+        latData = exifGPS[2]
+        lonData = exifGPS[4]
+
+        # 위치 정보를 계산한다
+        latDeg = latData[0][0] / float(latData[0][1])
+        latMin = latData[1][0] / float(latData[1][1])
+        latSec = latData[2][0] / float(latData[2][1])
+        lonDeg = lonData[0][0] / float(lonData[0][1])
+        lonMin = lonData[1][0] / float(lonData[1][1])
+        lonSec = lonData[2][0] / float(lonData[2][1])
+
+        Lat = (latDeg + (latMin + latSec / 60.0) / 60.0)
+        if exifGPS[1] == 'S': Lat = Lat * -1
+        Lon = (lonDeg + (lonMin + lonSec / 60.0) / 60.0)
+        if exifGPS[3] == 'W': Lon = Lon * -1
+
+        # 장소를 바로 볼 수 있는 파일로 저장한다.
+        msg = "There is GPS info in this picture located at " + str(Lat) + "," + str(Lon)
+        print (msg)
+        kmlheader = '<?xml version="1.0" encoding="UTF-8"?>' + '<kml xmlns="http://www.opengis.net/kml/2.2">'
+        kml = ('<Placemark><name>%s</name><Point><coordinates>%6f,%6f</coordinates></Point></Placemark></kml>') % (
+        filename1, Lon, Lat)
+        with open(filename1 + '.locationInfo', "w") as f:
+
+            # kml파일에 써서 저장해준다.
+            f.write(kmlheader + kml)
+        print ('location file created')
+
+        # gps 정보가 없을경우 정보가 없음을 알려준다
+    except:
+        print ('There is no GPS info in this picture')
+        pass
