@@ -4,7 +4,7 @@ import pytesseract # 이미지내에서 문자를 추출하기 위한 OCR기술�
 import datetime # 시간을 다루기 위한 모듈
 from openpyxl import * # 엑셀을 다루는 라이브러리
 import string # 문자열을 다루는 라이브러리
-img_path = 'C:/Users/kys/Desktop/Hack/testImage/test01.jpg' # 경로 설정
+img_path = 'C:/test01.jpg' # 경로 설정
 #cv2.imread(이미지파일경로, flag) 이미지 파일을 읽는다.
 #cv2.IMREAD_COLOR = 이미지 파일을 Color로 읽어들이며, 투명한 부분을 무시하고 보통 Default 값이다.
 img = cv2.imread(img_path,cv2.IMREAD_COLOR)
@@ -27,6 +27,8 @@ year = datetime.timedelta(days = 365) # 1년
 week = datetime.timedelta(days = 7) # 1주일
 
 month = datetime.timedelta(days = 30) # 1달
+
+day = datetime.timedelta(days = 1) # 1달
 #토마토
 TOMATO = datetime.datetime.now() + week # 토마토의 유통기한
 TOMATO = TOMATO - datetime.datetime.now() # 토마토의 유통기한이 얼마 남았는지 표시
@@ -34,39 +36,48 @@ TOMATO = TOMATO - datetime.datetime.now() # 토마토의 유통기한이 얼마 
 TOM = datetime.datetime.now() + year # 토마토 소스의 유통기한
 TOM = TOM - datetime.datetime.now() # 토마토 소스가 유통기한이 얼마 남았는지 표시
 #SUGAR 유통기한없음 추가
-SUGAR = datetime.datetime.now() + year # 토마토 소스의 유통기한
-SUGAR = SUGAR - datetime.datetime.now() # 토마토 소스가 유통기한이 얼마 남았는지 표시
-
+SUGAR = datetime.datetime.now() # 설탕의 유통기한
+SUGAR = SUGAR - datetime.datetime.now() # 설탕이 유통기한이 얼마 남았는지 표시
 #오트밀
 MEAL = datetime.datetime.now() + (year*2) # 오트밀의 유통기한
 MEAL = MEAL - datetime.datetime.now() # 오트밀의 유통기한이 얼마 남았는지 표시
 #SALT 유통기한없음 추가
-SALT = datetime.datetime.now() + year # 토마토 소스의 유통기한
-SALT = SALT - datetime.datetime.now() # 토마토 소스가 유통기한이 얼마 남았는지 표시
+SALT = datetime.datetime.now() #  소금의 유통기한
+SALT = SALT - datetime.datetime.now() # 소금이 유통기한이 얼마 남았는지 표시
 #PEANUT
 PEANUT = datetime.datetime.now() + (month * 4) # 땅콩의 유통기한
 PEANUT = PEANUT - datetime.datetime.now() # 땅콩의 유통기한이 얼마 남았는지 표시
 #PNT BUTTR
 BUTTR = datetime.datetime.now() + (month * 18) # 땅콩버터의 유통기한
 BUTTR = BUTTR - datetime.datetime.now() # 땅콩버터의 유통기한이 얼마 남았는지 표시
-#HALFHALF
+#HALFHALF - 우유
 HALFHALF = datetime.datetime.now() + ( month / 10) # 우유의 유통기한
 HALFHALF = HALFHALF - datetime.datetime.now() # 우유의 유통기한이 얼마 남았는지 표시
-#RICE
-RICE = datetime.datetime.now() + year # 쌀의 유통기한
+#RICE 유통기한없음 추가
+RICE = datetime.datetime.now() # 쌀의 유통기한
 RICE = RICE - datetime.datetime.now() # 쌀의 유통기한이 얼마 남았는지 표시
-# SIMADV
-SIMADV = datetime.datetime.now() + year  # 토마토 소스의 유통기한
-SIMADV = SIMADV - datetime.datetime.now()  # 토마토 소스가 유통기한이 얼마 남았는지 표시
+# SIMADV - 분유
+SIMADV = datetime.datetime.now() +(month * 18)  # 분유의 유통기한
+SIMADV = SIMADV - datetime.datetime.now()  # 분유가 유통기한이 얼마 남았는지 표시
 #NUTELLA
 NUTELLA = datetime.datetime.now() + (month * 4) # 누텔라잼의 유통기한
 NUTALLE = NUTELLA - datetime.datetime.now() # 누텔라잼의 유통기한이 얼마 남았는지 표시
 #COKE
-COKE = datetime.datetime.now() + year # 토마토 소스의 유통기한
-COKE = COKE - datetime.datetime.now() # 토마토 소스가 유통기한이 얼마 남았는지 표시
+COKE = datetime.datetime.now() + year # 콜라의 유통기한
+COKE = COKE - datetime.datetime.now() # 콜라가 유통기한이 얼마 남았는지 표시
 #RAMEN
 RAMEN = datetime.datetime.now() + (month * 5) # 라면의 유통기한
 RAMEN = RAMEN - datetime.datetime.now() # 라면의 유통기한이 얼마 남았는지 표시
+#BANANA
+BANANA = datetime.datetime.now() + (day * 10) # 바나나의 유통기한
+BANANA = BANANA - datetime.datetime.now() # 바나나의 유통기한이 얼마 남았는지 표시
+#SOUR PATCH - 사탕
+#CANDY
+CANDY = datetime.datetime.now() + (year * 2) # CANDY의 유통기한
+CANDY = CANDY - datetime.datetime.now() # CANDY의 유통기한이 얼마 남았는지 표시
+#POWERADE
+POWERADE = datetime.datetime.now() + (year * 2) # POWERADE의 유통기한
+POWERADE = POWERADE - datetime.datetime.now() # POWERADE의 유통기한이 얼마 남았는지 표시
 
 #콘솔에 문자를 출력한다.
 print(txt)
@@ -80,11 +91,11 @@ while(1): # 반복문 실행
         elif ("TOM" in div[i]):
             best.append('유통기한 까지는 {}일 남았습니다.'.format(TOM.days, TOM.seconds // 3600))
         elif("SUGAR" in div[i]):
-            best.append('유통기한 까지는 {}일 남았습니다.'.format(SUGAR.days, SUGAR.seconds // 3600))
+            best.append('유통기한이 없어 서늘하고 건조한 곳에 보관해야합니다.')
         elif ("MEAL" in div[i]):
             best.append('유통기한 까지는 {}일 남았습니다.'.format(MEAL.days, MEAL.seconds // 3600))
         elif ("SALT" in div[i]):
-            best.append('유통기한 까지는 {}일 남았습니다.'.format(SALT.days, SALT.seconds // 3600))
+            best.append('유통기한이 없어 서늘하고 건조한 곳에 보관해야합니다.')
         elif ("PEANUT" in div[i]):
             best.append('유통기한 까지는 {}일 남았습니다.'.format(PEANUT.days, PEANUT.seconds // 3600))
         elif ("BUTTR" in div[i]):
@@ -92,7 +103,7 @@ while(1): # 반복문 실행
         elif ("HALF HALF" in div[i]):
             best.append('유통기한 까지는 {}일 남았습니다.'.format(HALFHALF.days, HALFHALF.seconds // 3600))
         elif ("RICE" in div[i]):
-            best.append('유통기한 까지는 {}일 남았습니다.'.format(RICE.days, RICE.seconds // 3600))
+            best.append('유통기한이 없어 밀폐용기에 담아 보관해야합니다.')
         elif ("RAMEN" in div[i]):
             best.append('유통기한 까지는 {}일 남았습니다.'.format(RAMEN.days,  RAMEN.seconds // 3600))
         elif ("SIM ADV" in div[i]):
@@ -101,38 +112,38 @@ while(1): # 반복문 실행
             best.append('유통기한 까지는 {}일 남았습니다.'.format(NUTELLA.days, NUTELLA.seconds // 3600))
         elif ("COKE" in div[i]):
             best.append('유통기한 까지는 {}일 남았습니다.'.format(COKE.days, COKE.seconds // 3600))
+        elif ("BANANA" in div[i]):
+            best.append('유통기한 까지는 {}일 남았습니다.'.format(BANANA.days, BANANA.seconds // 3600))
+        elif ("SOURPATCH" in div[i] ):
+            best.append('유통기한 까지는 {}일 남았습니다.'.format(CANDY.days, CANDY.seconds // 3600))
+        elif ("CANDY" in div[i]):
+            best.append('유통기한 까지는 {}일 남았습니다.'.format(CANDY.days, CANDY.seconds // 3600))
+        elif ("POWERADE" in div[i]):
+            best.append('유통기한 까지는 {}일 남았습니다.'.format(POWERADE.days, COKE.seconds // 3600))
         elif ("TOTAL" in div[i]):
-            # 공백을 기준으로 문자열을 나눈다. 
-            print(div[i].split())
+            # 공백을 기준으로 문자열을 나눈다.
             totalList = div[i].split()
-            totalSet = i #total값의 행을 저장
-            best.append('총 금액 :  {} '.format(totalList[1]))
+            totalSet = i  # total값의 행을 저장
+            best.append('총 금액 :  {} '.format(totalList[1])) # 리스트에 넣는다.
 
         else:
-            best.append (" ")
+            best.append (" ") # 리스트에 값을 넣는다.
         i = i+1
 
+    if(txt[end:end+4] == "SOLD"): # SOLD 있을떄
 
-
-    if(txt[end:end+4] == "SOLD"):
-
-        break
+        break # 탈출한다. 나온다.
     end = end + 1
 
-wb= Workbook()
-ws = wb.active
-ws2 = wb.create_sheet(title = "second")
+wb= Workbook() #엑셀을 연다.
+ws = wb.active # 파일을 활성화 시킨다.
 
-## ws2 = wb.create_sheet(title = "식로품 유통기한") #으로 바꾸는게 어떨지
-ws.title = "영수증 정보"
+ws.title = "영수증 정보" #제목을 준다.
 
-for row in range(1,i+1):
-    ws.cell(row = row, column = 1, value=("{}".format(div[row - 1])))
-    ws.cell(row = row, column = 2, value=("{}".format(best[row - 1])))
-    #ws.cell(row=1, column=3, value=("{}".format(best[totalSet]))) 세번 쨰 열에 첫번 째 행에 total값 출력
+for row in range(1,i+1): #
+    ws.cell(row = row, column = 1, value=("{}".format(div[row - 1]))) # 첫번쨰 열에  div리스트를 추가한다.
+    ws.cell(row = row, column = 2, value=("{}".format(best[row - 1]))) # 두번쨰 열에 best리스트를 추가한다. // 유통기한
 
 
 # 엑셀 파일 저장
 wb.save('영수증.xlsx')
-
-#여기부터 문자 인식하기
